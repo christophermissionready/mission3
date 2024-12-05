@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerPrep Pro - AI Interview Practice</title>
+    <style>
+        :root {
+            --primary-color: #2196f3;
+            --secondary-color: #1976d2;
+            --accent-color: #e3f2fd;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --dark-gray: #666;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.5rem 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: var(--accent-color);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem 20px;
+            margin-top: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            max-width: 800px;
+            margin: 1rem auto;
+            padding: 0 20px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .service-card h3 {
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        .service-card p {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            margin-bottom: 1rem;
+        }
+
+        .chat-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 20px;
+        }
+
+        #chatContainer {
+            display: none;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 15px 20px;
+            border-radius: 15px;
+            max-width: 80%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .ai-message {
+            background-color: var(--accent-color);
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+
+        .user-message {
+            background-color: var(--primary-color);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #responseForm {
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        #responseForm textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+        }
+
+        #responseForm .button-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        #responseForm button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #responseForm button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        #responseForm button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: none;
+            background-color: var(--accent-color);
+            padding: 10px;
+            border-radius: 5px;
+            margin-right: 20%;
+            margin-bottom: 10px;
+        }
+
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: typing 1s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+            margin-right: 0;
+        }
+
+        @keyframes typing {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .analysis-container {
+            display: none;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            white-space: pre-line;
+        }
+
+        .analysis-container h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .footer {
+            background-color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--dark-gray);
+        }
+
+        .loading-text {
+            display: none;
+            color: var(--dark-gray);
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        .loading .loading-text {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">CareerPrep Pro</div>
+            <nav class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Services</a>
+                <a href="#">Pricing</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Master Your Interview Skills</h1>
+        <p>Practice with our AI-powered interview simulator and get ready for your dream job. Join thousands of successful candidates who landed their ideal positions.</p>
+    </section>
+
+    <section class="services">
+        <div class="service-card">
+            <h3>Resume Review</h3>
+            <p>Get your resume reviewed by industry experts and AI analysis to stand out from the crowd.</p>
+            <button disabled>Coming Soon</button>
+        </div>
+        <div class="service-card">
+            <h3>Career Coaching</h3>
+            <p>One-on-one sessions with experienced career coaches to guide your professional journey.</p>
+            <button disabled>Coming Soon</button>
+        </div>
+    </section>
+
+    <div class="chat-container">
+        <div class="container">
+            <h2>AI Interview Practice</h2>
+            <p>Start your practice interview by entering the position you're interested in:</p>
+            
+            <form id="startForm">
+                <input type="text" id="jobTitle" placeholder="Enter the job title (e.g., Software Developer)" required>
+                <button type="submit">Start Interview</button>
+            </form>
+
+            <div id="chatContainer" class="chat-container">
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+
+            <form id="responseForm" style="display: none;">
+                <textarea id="response" placeholder="Type your response..." required></textarea>
+                <div class="button-container">
+                    <button type="submit">Send Response</button>
+                    <button type="button" id="analyzeButton">Analyze Interview</button>
+                </div>
+            </form>
+            <div class="analysis-container" id="analysisContainer">
+                <h3>Interview Analysis</h3>
+                <div id="analysisContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 CareerPrep Pro. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const API_BASE_URL = 'http://localhost:5998';
+            let currentJobTitle = '';
+            let messageHistory = [];
+            const typingIndicator = document.querySelector('.typing-indicator');
+            const analysisContainer = document.getElementById('analysisContainer');
+            const analyzeButton = document.getElementById('analyzeButton');
+            const responseTextarea = document.getElementById('response');
+
+            // Enable all form elements immediately
+            document.querySelectorAll('input, textarea, button').forEach(el => {
+                el.removeAttribute('disabled');
+            });
+
+            // Add Enter key handler for response textarea
+            responseTextarea.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const form = document.getElementById('responseForm');
+                    if (responseTextarea.value.trim()) {
+                        form.dispatchEvent(new Event('submit'));
+                    }
+                }
+            });
+
+            function setLoading(form, isLoading) {
+                const button = form.querySelector('button[type="submit"]');
+                const analyzeBtn = form.querySelector('#analyzeButton');
+                const inputs = form.querySelectorAll('input, textarea');
+                if (isLoading) {
+                    form.classList.add('loading');
+                    button.disabled = true;
+                    if (analyzeBtn) analyzeBtn.disabled = true;
+                    inputs.forEach(input => input.disabled = true);
+                } else {
+                    form.classList.remove('loading');
+                    button.disabled = false;
+                    if (analyzeBtn) analyzeBtn.disabled = false;
+                    inputs.forEach(input => input.disabled = false);
+                }
+            }
+
+            function showTypingIndicator() {
+                typingIndicator.style.display = 'block';
+                const chatContainer = document.getElementById('chatContainer');
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
+            function hideTypingIndicator() {
+                typingIndicator.style.display = 'none';
+            }
+
+            function displayMessage(text, isAI) {
+                hideTypingIndicator();
+                const chatContainer = document.getElementById('chatContainer');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isAI ? 'ai-message' : 'user-message'}`;
+                messageDiv.textContent = text;
+                chatContainer.insertBefore(messageDiv, typingIndicator);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
+            document.getElementById('startForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                setLoading(form, true);
+                
+                currentJobTitle = document.getElementById('jobTitle').value;
+                
+                try {
+                    showTypingIndicator();
+                    const response = await fetch(`${API_BASE_URL}/api/interview/start`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ jobTitle: currentJobTitle })
+                    });
+                    
+                    const data = await response.json();
+                    if (response.ok) {
+                        messageHistory = data.history;
+                        document.getElementById('chatContainer').style.display = 'block';
+                        document.getElementById('responseForm').style.display = 'block';
+                        document.getElementById('startForm').style.display = 'none';
+                        
+                        // Display initial messages
+                        displayMessage(`I am applying for the ${currentJobTitle} position.`, false);
+                        displayMessage(data.question, true);
+                    } else {
+                        hideTypingIndicator();
+                        alert(data.error || 'Failed to start interview');
+                        setLoading(form, false);
+                    }
+                } catch (error) {
+                    hideTypingIndicator();
+                    alert('Error starting interview: ' + error.message);
+                    setLoading(form, false);
+                }
+            });
+
+            document.getElementById('responseForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const responseInput = document.getElementById('response');
+                const userResponse = responseInput.value;
+                
+                setLoading(form, true);
+                displayMessage(userResponse, false);
+                responseInput.value = '';
+                showTypingIndicator();
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/interview/respond`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            jobTitle: currentJobTitle,
+                            response: userResponse,
+                            history: messageHistory
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (response.ok) {
+                        messageHistory = data.history;
+                        displayMessage(data.question, true);
+                    } else {
+                        alert(data.error || 'Failed to get response');
+                    }
+                } catch (error) {
+                    alert('Error sending response: ' + error.message);
+                } finally {
+                    hideTypingIndicator();
+                    setLoading(form, false);
+                    responseInput.focus();
+                }
+            });
+
+            analyzeButton.addEventListener('click', async () => {
+                const form = document.getElementById('responseForm');
+                setLoading(form, true);
+                analysisContainer.style.display = 'none';
+                
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/interview/analyze`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            jobTitle: currentJobTitle,
+                            history: messageHistory
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (response.ok) {
+                        const analysisContent = document.getElementById('analysisContent');
+                        analysisContent.textContent = data.analysis;
+                        analysisContainer.style.display = 'block';
+                        analysisContainer.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        alert(data.error || 'Failed to analyze interview');
+                    }
+                } catch (error) {
+                    alert('Error analyzing interview: ' + error.message);
+                } finally {
+                    setLoading(form, false);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
